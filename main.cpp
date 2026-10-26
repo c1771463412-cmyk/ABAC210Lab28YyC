@@ -53,7 +53,7 @@ int main() {
     
     // Goat Manager 3001 Engine
     int sel = main_menu();
-    while (sel != 9) {
+    while (sel != 10) {
         switch (sel) {
             case 1:
                 cout << "Adding a goat.\n";
@@ -132,6 +132,25 @@ int main() {
                 break;
             }
 
+            case 9: {
+                cout << "Finding the oldest goat.\n";
+
+                if (!trip.empty()) {
+                    // Find the goat with the largest age
+                    auto it = max_element(trip.begin(), trip.end(), compareAge);
+
+                    cout << "Oldest goat: "
+                         << it->get_name() << " ("
+                         << it->get_age() << ", "
+                         << it->get_color() << ")" << endl;
+                }
+                else {
+                    cout << "List is empty." << endl;
+                }
+
+                break;
+            }
+
             default:
                 cout << "Invalid selection.\n";
                 break;
@@ -153,12 +172,13 @@ int main_menu() {
     cout << "[6] Find goat by name\n";
     cout << "[7] Count goats by color\n";
     cout << "[8] Find youngest goat\n";
-    cout << "[9] Quit\n";
+    cout << "[9] Find oldest goat\n";
+    cout << "[10] Quit\n";
     cout << "Choice --> ";
     int choice;
     cin >> choice;
 
-    while (cin.fail() || choice < 1 || choice > 9) {
+    while (cin.fail() || choice < 1 || choice > 10) {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
