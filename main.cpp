@@ -11,6 +11,7 @@ using namespace std;
 
 string searchName;
 string searchColor;
+int ageLimit;
 const int SZ_NAMES = 200, SZ_COLORS = 25;
 
 int select_goat(list<Goat> trip);
@@ -22,6 +23,7 @@ bool matchName(const Goat &goat);
 bool matchColor(const Goat &goat);
 bool compareAge(const Goat &a, const Goat &b);
 bool sameName(const Goat &a, const Goat &b);
+bool youngerThan(const Goat &goat);
 
 int main() {
     srand(time(0));
@@ -54,7 +56,7 @@ int main() {
     
     // Goat Manager 3001 Engine
     int sel = main_menu();
-    while (sel != 11) {
+    while (sel != 12) {
         switch (sel) {
             case 1:
                 cout << "Adding a goat.\n";
@@ -172,6 +174,32 @@ int main() {
                 break;
             }
 
+            case 11: {
+                cout << "Enter age limit: ";
+                cin >> ageLimit;
+
+                while (cin.fail() || ageLimit < 0 || ageLimit > MAX_AGE) {
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+                    cout << "Invalid age, again --> ";
+                    cin >> ageLimit;
+                }
+
+                int oldSize = trip.size();
+
+                // Remove goats younger than the entered age
+                trip.remove_if(youngerThan);
+
+                int removed = oldSize - trip.size();
+
+                cout << "Removed " << removed << " goat(s).\n";
+
+                display_trip(trip);
+
+                break;
+            }
+
             default:
                 cout << "Invalid selection.\n";
                 break;
@@ -195,12 +223,13 @@ int main_menu() {
     cout << "[8] Find youngest goat\n";
     cout << "[9] Find oldest goat\n";
     cout << "[10] Remove duplicate goats\n";
-    cout << "[11] Quit\n";
+    cout << "[11] Remove goats younger than an age\n";
+    cout << "[12] Quit\n";
     cout << "Choice --> ";
     int choice;
     cin >> choice;
 
-    while (cin.fail() || choice < 1 || choice > 11) {
+    while (cin.fail() || choice < 1 || choice > 12) {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
@@ -279,4 +308,11 @@ bool compareAge(const Goat &a, const Goat &b) {
 // returns: true if both goats have the same name, otherwise false
 bool sameName(const Goat &a, const Goat &b) {
     return a.get_name() == b.get_name();
+}
+
+// youngerThan() checks if a goat is younger than the age limit
+// arguments: reference to a Goat object
+// returns: true if the goat's age is below the limit, otherwise false
+bool youngerThan(const Goat &goat) {
+    return goat.get_age() < ageLimit;
 }
