@@ -71,11 +71,23 @@ int main() {
                 display_trip(trip);
                 break;
 
-            case 4:
+            case 4: {
                 cout << "Sorting goats by name.\n";
-                trip.sort();
+
+                // Copy goats into a temporary list
+                list<Goat> copiedTrip(trip.size());
+                copy(trip.begin(), trip.end(), copiedTrip.begin());
+
+                // Sort the copied list by name
+                copiedTrip.sort();
+
+                // Copy the sorted goats back to the original list
+                copy(copiedTrip.begin(), copiedTrip.end(), trip.begin());
+
                 display_trip(trip);
+
                 break;
+            }
 
             case 5:
                 cout << "Reversing goat order.\n";
@@ -158,15 +170,13 @@ int main() {
             }
 
             case 10: {
-                cout << "Removing duplicate goats.\n";
+                cout << "Removing adjacent duplicate goats.\n";
 
                 int oldSize = trip.size();
 
-                // Sort goats by name so duplicates are next to each other
-                trip.sort();
-
-                // Remove goats with duplicate names
-                trip.unique(sameName);
+                // Remove adjacent goats with matching names
+                auto newEnd = unique(trip.begin(), trip.end(), sameName);
+                trip.erase(newEnd, trip.end());
 
                 int removed = oldSize - trip.size();
 
@@ -191,8 +201,11 @@ int main() {
 
                 int oldSize = trip.size();
 
-                // Remove goats younger than the entered age
-                trip.remove_if(youngerThan);
+                // Move goats that meet the age requirement to the front
+                auto newEnd = remove_if(trip.begin(), trip.end(), youngerThan);
+
+                // Erase the removed goats from the list
+                trip.erase(newEnd, trip.end());
 
                 int removed = oldSize - trip.size();
 
@@ -225,7 +238,7 @@ int main_menu() {
     cout << "[7] Count goats by color\n";
     cout << "[8] Find youngest goat\n";
     cout << "[9] Find oldest goat\n";
-    cout << "[10] Remove duplicate goats\n";
+    cout << "[10] Remove adjacent duplicate goats\n";
     cout << "[11] Remove goats younger than an age\n";
     cout << "[12] Quit\n";
     cout << "Choice --> ";
