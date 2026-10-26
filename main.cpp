@@ -20,6 +20,7 @@ void display_trip(list<Goat> trip);
 int main_menu();
 bool matchName(const Goat &goat);
 bool matchColor(const Goat &goat);
+bool compareAge(const Goat &a, const Goat &b);
 
 int main() {
     srand(time(0));
@@ -52,7 +53,7 @@ int main() {
     
     // Goat Manager 3001 Engine
     int sel = main_menu();
-    while (sel != 8) {
+    while (sel != 9) {
         switch (sel) {
             case 1:
                 cout << "Adding a goat.\n";
@@ -112,6 +113,25 @@ int main() {
                 break;
             }
 
+            case 8: {
+                cout << "Finding the youngest goat.\n";
+
+                if (!trip.empty()) {
+                    // Find the goat with the smallest age
+                    auto it = min_element(trip.begin(), trip.end(), compareAge);
+
+                    cout << "Youngest goat: "
+                         << it->get_name() << " ("
+                         << it->get_age() << ", "
+                         << it->get_color() << ")" << endl;
+                }
+                else {
+                    cout << "List is empty." << endl;
+                }
+
+                break;
+            }
+
             default:
                 cout << "Invalid selection.\n";
                 break;
@@ -132,12 +152,13 @@ int main_menu() {
     cout << "[5] Reverse goat order\n";
     cout << "[6] Find goat by name\n";
     cout << "[7] Count goats by color\n";
-    cout << "[8] Quit\n";
+    cout << "[8] Find youngest goat\n";
+    cout << "[9] Quit\n";
     cout << "Choice --> ";
     int choice;
     cin >> choice;
 
-    while (cin.fail() || choice < 1 || choice > 8) {
+    while (cin.fail() || choice < 1 || choice > 9) {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
@@ -202,4 +223,11 @@ bool matchName(const Goat &goat) {
 // returns: true if the colors match, otherwise false
 bool matchColor(const Goat &goat) {
     return goat.get_color() == searchColor;
+}
+
+// compareAge() compares the ages of two goats
+// arguments: references to two Goat objects
+// returns: true if the first goat is younger than the second
+bool compareAge(const Goat &a, const Goat &b) {
+    return a.get_age() < b.get_age();
 }
