@@ -79,7 +79,10 @@ int main() {
 
             case 5:
                 cout << "Reversing goat order.\n";
-                trip.reverse();
+
+                // Reverse the order of goats using an STL algorithm
+                reverse(trip.begin(), trip.end());
+
                 display_trip(trip);
                 break;
 
