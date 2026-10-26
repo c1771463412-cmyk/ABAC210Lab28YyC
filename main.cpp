@@ -21,6 +21,7 @@ int main_menu();
 bool matchName(const Goat &goat);
 bool matchColor(const Goat &goat);
 bool compareAge(const Goat &a, const Goat &b);
+bool sameName(const Goat &a, const Goat &b);
 
 int main() {
     srand(time(0));
@@ -53,7 +54,7 @@ int main() {
     
     // Goat Manager 3001 Engine
     int sel = main_menu();
-    while (sel != 10) {
+    while (sel != 11) {
         switch (sel) {
             case 1:
                 cout << "Adding a goat.\n";
@@ -151,6 +152,26 @@ int main() {
                 break;
             }
 
+            case 10: {
+                cout << "Removing duplicate goats.\n";
+
+                int oldSize = trip.size();
+
+                // Sort goats by name so duplicates are next to each other
+                trip.sort();
+
+                // Remove goats with duplicate names
+                trip.unique(sameName);
+
+                int removed = oldSize - trip.size();
+
+                cout << "Removed " << removed << " duplicate goat(s).\n";
+
+                display_trip(trip);
+
+                break;
+            }
+
             default:
                 cout << "Invalid selection.\n";
                 break;
@@ -173,12 +194,13 @@ int main_menu() {
     cout << "[7] Count goats by color\n";
     cout << "[8] Find youngest goat\n";
     cout << "[9] Find oldest goat\n";
-    cout << "[10] Quit\n";
+    cout << "[10] Remove duplicate goats\n";
+    cout << "[11] Quit\n";
     cout << "Choice --> ";
     int choice;
     cin >> choice;
 
-    while (cin.fail() || choice < 1 || choice > 10) {
+    while (cin.fail() || choice < 1 || choice > 11) {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
@@ -250,4 +272,11 @@ bool matchColor(const Goat &goat) {
 // returns: true if the first goat is younger than the second
 bool compareAge(const Goat &a, const Goat &b) {
     return a.get_age() < b.get_age();
+}
+
+// sameName() checks if two goats have the same name
+// arguments: references to two Goat objects
+// returns: true if both goats have the same name, otherwise false
+bool sameName(const Goat &a, const Goat &b) {
+    return a.get_name() == b.get_name();
 }
