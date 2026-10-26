@@ -5,10 +5,12 @@
 #include <iomanip>
 #include <list>
 #include <algorithm>
+#include <limits>
 #include "Goat.h"
 using namespace std;
 
 string searchName;
+string searchColor;
 const int SZ_NAMES = 200, SZ_COLORS = 25;
 
 int select_goat(list<Goat> trip);
@@ -17,6 +19,7 @@ void add_goat(list<Goat> &trip, string [], string []);
 void display_trip(list<Goat> trip);
 int main_menu();
 bool matchName(const Goat &goat);
+bool matchColor(const Goat &goat);
 
 int main() {
     srand(time(0));
@@ -49,7 +52,7 @@ int main() {
     
     // Goat Manager 3001 Engine
     int sel = main_menu();
-    while (sel != 7) {
+    while (sel != 8) {
         switch (sel) {
             case 1:
                 cout << "Adding a goat.\n";
@@ -96,6 +99,19 @@ int main() {
                 break;
             }
 
+            case 7: {
+                cout << "Enter goat color: ";
+                cin >> searchColor;
+
+                // Count goats with the matching color
+                int count = count_if(trip.begin(), trip.end(), matchColor);
+
+                cout << "Number of goats with color "
+                     << searchColor << ": " << count << endl;
+
+                break;
+            }
+
             default:
                 cout << "Invalid selection.\n";
                 break;
@@ -115,14 +131,20 @@ int main_menu() {
     cout << "[4] Sort goats by name\n";
     cout << "[5] Reverse goat order\n";
     cout << "[6] Find goat by name\n";
-    cout << "[7] Quit\n";
+    cout << "[7] Count goats by color\n";
+    cout << "[8] Quit\n";
     cout << "Choice --> ";
     int choice;
     cin >> choice;
-    while (choice < 1 || choice > 7) {
+
+    while (cin.fail() || choice < 1 || choice > 8) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
         cout << "Invalid, again --> ";
         cin >> choice;
     }
+
     return choice;
 }
 
@@ -173,4 +195,11 @@ int select_goat(list<Goat> trp) {
 // returns: true if the names match, otherwise false
 bool matchName(const Goat &goat) {
     return goat.get_name() == searchName;
+}
+
+// matchColor() checks if a goat's color matches the search color
+// arguments: reference to a Goat object
+// returns: true if the colors match, otherwise false
+bool matchColor(const Goat &goat) {
+    return goat.get_color() == searchColor;
 }
